@@ -19,6 +19,7 @@ class Fake(ModuleType, Coroutine):
         __props: dict[str, object] | None = None,
         __items: dict[str, object] | None = None,
         __list: list[object] | None = None,
+        __file: str = 'fake',
         __return_value: object | None = None,
         __await_value: object | None = None,
         __length: int | None = None,
@@ -40,6 +41,7 @@ class Fake(ModuleType, Coroutine):
         self.__props = __props
         self.__items = __items
         self.__list = __list
+        self.__file = __file
         self.__return_value = __return_value
         self.__await_value = __await_value
         self.__iteration_counter = 0
@@ -65,7 +67,7 @@ class Fake(ModuleType, Coroutine):
         if self.__props and attr in self.__props:
             return cast(Fake, self.__props[attr])
         if attr == '__file__':
-            return cast(Fake, 'fake')
+            return cast(Fake, self.__file)
         return self
 
     def __setattr__(self: Fake, attr: str, value: object) -> None:
