@@ -16,11 +16,11 @@ class Fake(ModuleType, Coroutine):
     def __init__(
         self: Fake,
         *args: object,
-        __props: dict[str, object] | None = None,
+        __attrs: dict[str, object] | None = None,
         __items: dict[str, object] | None = None,
-        __list: list[object] | None = None,
         __file: str = 'fake',
         __return_value: object | None = None,
+        __list: list[object] | None = None,
         __await_value: object | None = None,
         __length: int | None = None,
         __iter: Iterator | None = None,
@@ -35,14 +35,14 @@ class Fake(ModuleType, Coroutine):
                 'kwargs': kwargs,
                 '__return_value': __return_value,
                 '__await_value': __await_value,
-                '__props': __props,
+                '__attrs': __attrs,
             },
         )
-        self.__props = __props
+        self.__attrs = __attrs
         self.__items = __items
-        self.__list = __list
         self.__file = __file
         self.__return_value = __return_value
+        self.__list = __list
         self.__await_value = __await_value
         self.__iteration_counter = 0
         self.__length = (len(__list) if __list else 1) if __length is None else __length
@@ -62,10 +62,10 @@ class Fake(ModuleType, Coroutine):
         logger.log(
             logging.INFO if self.__debug else logging.DEBUG,
             'Accessing fake attribute of a `Fake` instance',
-            extra={'attr': attr, 'props': self.__props},
+            extra={'attr': attr, 'attrs': self.__attrs},
         )
-        if self.__props and attr in self.__props:
-            return cast(Fake, self.__props[attr])
+        if self.__attrs and attr in self.__attrs:
+            return cast(Fake, self.__attrs[attr])
         if attr == '__file__':
             return cast(Fake, self.__file)
         return self
@@ -287,7 +287,7 @@ class Fake(ModuleType, Coroutine):
         return 'Fake'
 
     def __dir__(self: Fake) -> list[str]:
-        return list(self.__props.keys()) if self.__props else []
+        return list(self.__attrs.keys()) if self.__attrs else []
 
     def __sizeof__(self: Fake) -> int:
         return 1
