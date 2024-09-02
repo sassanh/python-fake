@@ -123,13 +123,6 @@ jobs:
       - name: Run Tests
         run: poetry run poe test
 
-      - name: Collect Store Snapshots
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: snapshots
-          path: tests/**/results/**/*.jsonc
-
       - name: Collect HTML Coverage Report
         uses: actions/upload-artifact@v4
         with:

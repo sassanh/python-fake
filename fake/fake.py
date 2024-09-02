@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 from types import ModuleType
-from typing import TYPE_CHECKING, Any, Self, cast
+from typing import TYPE_CHECKING, Any, Coroutine, Self, cast
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Iterator
@@ -12,7 +12,7 @@ logger = logging.getLogger('fake')
 logger.setLevel(logging.INFO)
 
 
-class Fake(ModuleType):
+class Fake(ModuleType, Coroutine):
     def __init__(
         self: Fake,
         *args: object,
