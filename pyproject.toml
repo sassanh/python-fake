@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "python-fake"
-version = "0.1.1"
+version = "0.1.2"
 description = "A general purpose mock library for Python"
 authors = ["Sassan Haradji <me@sassanh.com>"]
 license = "Apache-2.0"
@@ -28,8 +28,8 @@ python = "^3.9"
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-pyright = "^1.1.368"
-ruff = "^0.4.10"
+pyright = "^1.1.378"
+ruff = "^0.6.3"
 poethepoet = "^0.26.1"
 pytest = "^8.1.1"
 pytest-cov = "^4.1.0"

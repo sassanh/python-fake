@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 from types import ModuleType
-from typing import TYPE_CHECKING, Any, Coroutine, Self, cast
+from typing import TYPE_CHECKING, Any, Self, cast
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Iterator
@@ -12,7 +12,7 @@ logger = logging.getLogger('fake')
 logger.setLevel(logging.INFO)
 
 
-class Fake(ModuleType, Coroutine):
+class Fake(ModuleType):
     def __init__(
         self: Fake,
         *args: object,
@@ -120,7 +120,7 @@ class Fake(ModuleType, Coroutine):
             extra={'__await_value': self.__await_value},
         )
         yield
-        return self.__await_value or Fake()
+        return self.__await_value if self.__await_value is not None else self
 
     def __next__(self: Fake) -> Fake:
         logger.log(

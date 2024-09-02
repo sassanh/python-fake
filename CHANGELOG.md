@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.1.2
+
+- fix: revert making `Fake` a subclass of `Coroutine` as it conflicts with `__next__` and `__await__` behavior
+
 ## Version 0.1.1
 
 - feat: make `Fake` a subclass of `Coroutine`
