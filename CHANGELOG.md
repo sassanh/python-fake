@@ -5,6 +5,7 @@
 - feat: make `Fake` a subclass of `Coroutine`
 - feat: make `__file` customizable
 - refactor: rename `props` to `attrs` to be aligned with python conventions
+- test: add tests for core functionality
 
 ## Version 0.1.0
 
