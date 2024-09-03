@@ -3,6 +3,7 @@
 ## Version 0.1.3
 
 - refactor: improve iteration behavior in `__iter__`, `__next__`, `__aiter__` and `__anext__` methods
+- test: add tests for iteration behavior
 
 ## Version 0.1.2
 
