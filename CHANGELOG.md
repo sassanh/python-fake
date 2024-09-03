@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.1.3
+
+- refactor: improve iteration behavior in `__iter__`, `__next__`, `__aiter__` and `__anext__` methods
+
 ## Version 0.1.2
 
 - fix: revert making `Fake` a subclass of `Coroutine` as it conflicts with `__next__` and `__await__` behavior

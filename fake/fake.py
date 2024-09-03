@@ -12,6 +12,31 @@ logger = logging.getLogger('fake')
 logger.setLevel(logging.INFO)
 
 
+class FakeAsyncIterator:
+    def __init__(
+        self: FakeAsyncIterator,
+        __iter: Iterator,
+        *,
+        __debug: bool = False,
+    ) -> None:
+        self.__debug = __debug
+        logger.log(
+            logging.INFO if self.__debug else logging.DEBUG,
+            'Initializing `FakeAsyncIterator`',
+        )
+        self.__iter = __iter
+
+    async def __anext__(self: FakeAsyncIterator) -> Fake:
+        logger.log(
+            logging.INFO if self.__debug else logging.DEBUG,
+            'Getting next item of a `FakeAsyncIterator` instance',
+        )
+        try:
+            return next(self.__iter)
+        except StopIteration as e:
+            raise StopAsyncIteration from e
+
+
 class Fake(ModuleType):
     def __init__(
         self: Fake,
@@ -24,9 +49,10 @@ class Fake(ModuleType):
         __await_value: object | None = None,
         __length: int | None = None,
         __iter: Iterator | None = None,
+        __debug: bool = False,
         **kwargs: object,
     ) -> None:
-        self.__debug = kwargs.pop('_Fake__debug', False)
+        self.__debug = __debug
         logger.log(
             logging.INFO if self.__debug else logging.DEBUG,
             'Initializing `Fake`',
@@ -44,7 +70,6 @@ class Fake(ModuleType):
         self.__return_value = __return_value
         self.__list = __list
         self.__await_value = __await_value
-        self.__iteration_counter = 0
         self.__length = (len(__list) if __list else 1) if __length is None else __length
         self.__iter = __iter
         super().__init__('')
@@ -122,29 +147,7 @@ class Fake(ModuleType):
         yield
         return self.__await_value if self.__await_value is not None else self
 
-    def __next__(self: Fake) -> Fake:
-        logger.log(
-            logging.INFO if self.__debug else logging.DEBUG,
-            'Getting next of a `Fake` instance',
-            extra={'length': self.__length},
-        )
-        if self.__iteration_counter >= self.__length:
-            raise StopIteration
-        self.__iteration_counter += 1
-        return self
-
-    def __anext__(self: Fake) -> Fake:
-        logger.log(
-            logging.INFO if self.__debug else logging.DEBUG,
-            'Getting async next of a `Fake` instance',
-            extra={'length': self.__length},
-        )
-        if self.__iteration_counter >= self.__length:
-            raise StopAsyncIteration
-        self.__iteration_counter += 1
-        return self
-
-    def __iter__(self: Fake) -> Iterator[Fake]:
+    def __iter__(self: Fake) -> Iterator[object]:
         logger.log(
             logging.INFO if self.__debug else logging.DEBUG,
             'Getting iterator of a `Fake` instance',
@@ -152,17 +155,21 @@ class Fake(ModuleType):
         )
         if self.__iter is not None:
             return self.__iter
-        return self
+        if self.__list:
+            return iter(self.__list)
+        return iter([self] * self.__length)
 
-    def __aiter__(self: Fake) -> Iterator[Fake]:
+    def __aiter__(self: Fake) -> FakeAsyncIterator:
         logger.log(
             logging.INFO if self.__debug else logging.DEBUG,
             'Getting async iterator of a `Fake` instance',
             extra={'iter': self.__iter},
         )
         if self.__iter is not None:
-            return self.__iter
-        return self
+            return FakeAsyncIterator(self.__iter)
+        if self.__list:
+            return FakeAsyncIterator(iter(self.__list))
+        return FakeAsyncIterator(iter([self] * self.__length))
 
     def __enter__(self: Fake) -> Fake:  # noqa: PYI034
         return self
