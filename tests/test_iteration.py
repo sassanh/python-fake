@@ -1,6 +1,7 @@
 """Test iteration over `Fake` instances."""
 
 import asyncio
+from collections.abc import AsyncGenerator
 
 from fake.fake import Fake
 
@@ -71,6 +72,27 @@ def test_iteration_with_iter() -> None:
     assert counter == 3
 
 
+def test_async_iteration() -> None:
+    """Test `Fake` instance set with an async iterator being the iterable."""
+
+    async def async_iterator() -> AsyncGenerator[int, None]:
+        for item in [2, 1, 0]:
+            yield item
+
+    x = Fake(_Fake__aiter=async_iterator())
+
+    async def check() -> None:
+        counter = 0
+        async for i in x:
+            assert not isinstance(i, Fake)
+            assert i == 2 - counter
+            counter += 1
+
+        assert counter == 3
+
+    asyncio.run(check())
+
+
 def test_async_iteration_with_iter() -> None:
     """Test `Fake` instance set with an iterator being the iterable."""
     x = Fake(_Fake__iter=iter([2, 1, 0]))
@@ -80,6 +102,37 @@ def test_async_iteration_with_iter() -> None:
         async for i in x:
             assert not isinstance(i, Fake)
             assert i == 2 - counter
+            counter += 1
+
+        assert counter == 3
+
+    asyncio.run(check())
+
+
+def test_async_iteration_with_list() -> None:
+    """Test `Fake` instance set with a list being the iterable."""
+    x = Fake(_Fake__list=[2, 1, 0])
+
+    async def check() -> None:
+        counter = 0
+        async for i in x:
+            assert not isinstance(i, Fake)
+            assert i == 2 - counter
+            counter += 1
+
+        assert counter == 3
+
+    asyncio.run(check())
+
+
+def test_async_iteration_with_length() -> None:
+    """Test `Fake` instance set with length being the iterable."""
+    x = Fake(_Fake__length=3)
+
+    async def check() -> None:
+        counter = 0
+        async for i in x:
+            assert isinstance(i, Fake)
             counter += 1
 
         assert counter == 3

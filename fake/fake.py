@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import AsyncIterator
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Self, cast
 
@@ -12,7 +13,7 @@ logger = logging.getLogger('fake')
 logger.setLevel(logging.INFO)
 
 
-class FakeAsyncIterator:
+class FakeAsyncIterator(AsyncIterator):
     def __init__(
         self: FakeAsyncIterator,
         __iter: Iterator,
@@ -50,6 +51,7 @@ class Fake(ModuleType):
         __await_value: object | None = None,
         __length: int | None = None,
         __iter: Iterator | None = None,
+        __aiter: AsyncIterator | None = None,
         __debug: bool = False,
         **kwargs: object,
     ) -> None:
@@ -73,6 +75,7 @@ class Fake(ModuleType):
         self.__await_value = __await_value
         self.__length = (len(__list) if __list else 1) if __length is None else __length
         self.__iter = __iter
+        self.__aiter = __aiter
         super().__init__('')
 
     def __init_subclass__(cls: type[Fake], **kwargs: dict[str, Any]) -> None:
@@ -160,12 +163,14 @@ class Fake(ModuleType):
             return iter(self.__list)
         return iter([self] * self.__length)
 
-    def __aiter__(self: Fake) -> FakeAsyncIterator:
+    def __aiter__(self: Fake) -> AsyncIterator:
         logger.log(
             logging.INFO if self.__debug else logging.DEBUG,
             'Getting async iterator of a `Fake` instance',
             extra={'iter': self.__iter},
         )
+        if self.__aiter is not None:
+            return self.__aiter
         if self.__iter is not None:
             return FakeAsyncIterator(self.__iter)
         if self.__list:

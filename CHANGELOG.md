@@ -4,6 +4,7 @@
 
 - chore: replace poetry with uv
 - feat: allow directly setting async iterator by passing an async iterator to `_Fake__aiter__`
+- test: add tests for `with` and `async with`
 
 ## Version 0.1.3
 
