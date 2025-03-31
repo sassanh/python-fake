@@ -23,7 +23,7 @@ def test_awaitable() -> None:
 
 @pytest.mark.xfail
 def test_coroutine() -> None:
-    """Test `Fake` being and instance of `Coroutine`."""
+    """Test `Fake` being an instance of `Coroutine`."""
     x = Fake()
 
     assert isinstance(x, Coroutine)
