@@ -1,6 +1,6 @@
 # Changelog
 
-## Upcoming
+## Version 0.2.0
 
 - chore: replace poetry with uv
 - feat: allow directly setting async iterator by passing an async iterator to `_Fake__aiter__`
