@@ -16,6 +16,7 @@ class FakeAsyncIterator:
     def __init__(
         self: FakeAsyncIterator,
         __iter: Iterator,
+        /,
         *,
         __debug: bool = False,
     ) -> None:
@@ -90,9 +91,9 @@ class Fake(ModuleType):
             extra={'attr': attr, 'attrs': self.__attrs},
         )
         if self.__attrs and attr in self.__attrs:
-            return cast(Fake, self.__attrs[attr])
+            return cast('Fake', self.__attrs[attr])
         if attr == '__file__':
-            return cast(Fake, self.__file)
+            return cast('Fake', self.__file)
         return self
 
     def __setattr__(self: Fake, attr: str, value: object) -> None:
@@ -110,7 +111,7 @@ class Fake(ModuleType):
             'Accessing fake item of a `Fake` instance',
             extra={'key': key},
         )
-        if self.__items and key in self.__items:
+        if self.__items and isinstance(key, str) and key in self.__items:
             return self.__items[key]
         if isinstance(key, int) and self.__list:
             return self.__list[key]
@@ -134,7 +135,7 @@ class Fake(ModuleType):
             },
         )
         return cast(
-            Fake,
+            'Fake',
             self.__return_value if self.__return_value is not None else self,
         )
 
@@ -189,7 +190,7 @@ class Fake(ModuleType):
             'Getting MRO entries of a `Fake` instance',
             extra={'bases': bases},
         )
-        return (cast(type, self),)
+        return (cast('type', self),)
 
     def __len__(self: Fake) -> int:
         return self.__length
